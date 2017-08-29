@@ -27,8 +27,8 @@ public class GenericMergeSort {
 	 * 
 	 * @param arr : generic array to be sorted
 	 * @param tmp : temporary array used to store values during the merge operation
-	 * @param leftStart: start index of the array
-	 * @param rightEnd : end index of the array
+	 * @param leftStart: start index of the left sub-array
+	 * @param rightEnd : end index of the right sub-array
 	 */
 	public static <T extends Comparable<? super T>> void mergeSort(T[] arr, T[] tmp, 
 			int leftStart, int rightEnd) {
