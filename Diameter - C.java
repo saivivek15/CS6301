@@ -8,18 +8,24 @@ import java.util.Queue;
 import java.util.Scanner;
 
 /**
- * @author chandu
+ * @author Chandra Sekhar Guntupalli
+ * @author Sai Vivek Kanaparthy
+ * @author Sushma Eati
+ * @author Abhinaya Krishna Mandepudi
  *
  */
-class Diameter {
 
-	// Conducts a Breadth first search and return the path to the farthest node from the given root
-	public static LinkedList<Graph.Vertex> bfsSearch(Graph g, Graph.Vertex root) {
+class Diameter {
+	
+	static int pre[];
+	
+	// Conducts a Breadth first search and return the distances of each node from root
+	public static int[] bfsSearch(Graph g, Graph.Vertex root) {
 		// distance array that maintains distance of each vertex from the root
 		int dist[] = new int[g.size()];
-		
+		pre = new int[g.size()];
 		//Maintains the predecessor of each vertex
-		int pre[] = new int[g.size()];
+		
 		// initializing to -1
 		for (int i = 0; i< g.size(); i++)
 			dist[i] = -1;
@@ -42,6 +48,18 @@ class Diameter {
 			}
 		}
 		
+		return dist;
+	}
+	
+	/** method that gets the path to the farthest node from a given root and distances of each node from
+	 * the root
+	 * 
+	 * @param g : graph g
+	 * @param root : root node
+	 * @param dist : distance of each node from the root
+	 * @return
+	 */
+	public static LinkedList<Graph.Vertex> getPathToFarthestNode(Graph g, Graph.Vertex root, int dist[]) {
 		int maxDistance = 0;
 		int farthestNode = -1; // node farthest from root
 		
@@ -64,9 +82,12 @@ class Diameter {
 	
 	//calculates the diameter of the graph
 	public static LinkedList<Graph.Vertex> diameter(Graph g) {
-		LinkedList<Graph.Vertex> l = bfsSearch(g, g.v[0]);
+		Graph.Vertex root = g.v[0];
+		int d[] = bfsSearch(g, root);
+		LinkedList<Graph.Vertex> l = getPathToFarthestNode(g, root, d);
 		Graph.Vertex u = l.removeFirst(); // node farthest from the randomly selected root
-		return bfsSearch(g, u);
+		d = bfsSearch(g, u);
+		return getPathToFarthestNode(g, u, d);
 	}
 	
 	/**

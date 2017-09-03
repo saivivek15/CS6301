@@ -1,101 +1,96 @@
+/**
+ * 
+ */
 package cs6301.g33;
-/*
+
+/**
+ * Date created: 08/24/2017
+ * @author Chandra Sekhar Guntupalli
  * @author Sai Vivek Kanaparthy
  * @author Sushma Eati
- * @author Chandra Sekhar Guntupalli
  * @author Abhinaya Krishna Mandepudi
+ * 
  */
-
 public class MergeSort {
+	
 	/**
-	 * @param arr : array to be sorted
-	 * @param tmp : temporary array to store intermediate values in merge method
-	 * @param start : start index of array for sorting
-	 * @param end: end index of array for sorting
-	 * @param mid: mid index of array where it is to be divided into two sub arrays
-	 * Procedure to merge sub arrays by sorting the elements of sub arrays
+	 * 
+	 * @param arr : int array to be sorted
+	 * @param tmp : tmp array is used to store values during the merge operation
+	 * @return 
 	 */
-	public static void merge(int[] arr,int[] tmp,int start, int mid, int end){
-		int left=start;
-		int right=mid+1;
-		int k=start;
-		// traverse along the two sub arrays and copy the least into the tmp array
-		while(left<=mid && right<=end){
-			if (left<=mid && right<=end){
-				tmp[k]=arr[left];
-				left++;
-			}
-			else{
-				tmp[k]=arr[right];
-				right++;
-			}
-			k++;
-		}
-		//copy the left over elements if any in the left sub array
-		while(left<=mid){
-			tmp[k]=arr[left];
-			k++;
-			left++;
-		}
-		//copy the left over elements if any in the right sub array
-		while(right<=end){
-			tmp[k]=arr[right];
-			k++;
-			right++;
-		}
-		//copy sorted elements from the temp array
-		for(left = start; left <=end; left++){
-			arr[left] = tmp[left];
-		}
-	}
-	/**
-	 * @param arr : array to be sorted
-	 * @param tmp : temporary array to store intermediate values in merge method
-	 * @param start : start index of array for sorting
-	 * @param end: end index of array for sorting
-	 * Procedure to run merge sort where arrays are divided into sub arrays 
-	 * and merge method is applied to get sorted arrays
-	 */
-	public static void sort(int[] A,int[] tmp ,int start, int end){
-		if(start < end){
-		int mid = (start+end) >>> 1;
-		//recursive call for left sub array
-		sort(A,tmp, start, mid);
-		//recursive call for right sub array
-		sort(A, tmp,mid+1, end);
-		//merge the sorted left and right sub arrays
-		merge(A,tmp,start,mid,end );
-		}
+	public static void mergeSort(int[] arr, int[] tmp) {
+		mergeSort(arr, tmp, 0, arr.length - 1);
 	}
 	
 	/**
-	 * @param arr : array to be sorted
-	 * @param tmp : temporary array to store intermediate values in merge method
+	 * Procedure to do the sorting - divides the input into 2 halves and calls itself 
+	 * for the two halves and merges the sorted halves
+	 * 
+	 * @param arr : int array to be sorted
+	 * @param tmp : tmp array is used to store values during the merge operation
+	 * @param leftStart : start index of left sub-array
+	 * @param rightEnd : end index of right sub-array
 	 */
-	public static void mergeSort(int[] arr, int[] tmp){
-		sort(arr,tmp, 0, arr.length - 1);
+	public static void mergeSort(int[] arr, int[] tmp, int leftStart, int rightEnd) {
+		if (leftStart >= rightEnd) 
+			return;
+		int middle = (leftStart + rightEnd)/2;
+		mergeSort(arr, tmp, leftStart, middle);
+		mergeSort(arr, tmp, middle+1, rightEnd);
+		mergeHalves(arr, tmp, leftStart, rightEnd);
 	}
 	
 	/**
-	 * Driver Class
+	 * Procedure for merging two sorted sub-arrays (halves)
+	 * Precondition - arr[leftStart...leftEnd] and arr[rightStart...rightEnd] are sorted
+	 * Look into the procedure for the definition of leftEnd and rightStart
+	 * 
+	 * @param arr : int array to be sorted
+	 * @param tmp : temporary int array used to store values during the merge operation
+	 * @param leftStart : start index of the left sub-array
+	 * @param rightEnd : end index of the right sub-array
 	 */
-	public static void main(String[] args){
-		int n=1000000;
-		int[] A = new int[n];
-		int[] tmp = new int[n];
+	public static void mergeHalves(int[] arr, int[] tmp, int leftStart, int rightEnd) {
+		int leftEnd = (leftStart + rightEnd)/2;
+		int righStart = leftEnd + 1;
+		int size = rightEnd - leftStart + 1;
+		
+		int left = leftStart;
+		int right = righStart;
+		
+		int index = leftStart;
+		while(left <= leftEnd && right <= rightEnd) {
+			if (arr[left] <= arr[right])
+				tmp[index] = arr[left++];
+			else
+				tmp[index] = arr[right++];
+			index++;
+		}
+		
+		System.arraycopy(arr, left, tmp, index, leftEnd - left + 1);
+		System.arraycopy(arr, right, tmp, index, rightEnd - right + 1);
+
+		System.arraycopy(tmp, leftStart, arr, leftStart, size);
+	}
+	
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		int n = 16000000;
+		int[] array = new int[n];
+		
 		// create array in the descending order to get the worst case running time
-			for(int i=n;i>0;i--){
-				A[n-i] = i;
-			}
-//		for(int each=0;each<n;each++){
-//			System.out.print(A[each]+" ");
-//		}
+		for(int i=n;i>0;i--) {
+			array[n-i] = i;
+		}
+		Shuffle.shuffle(array);
+		
 		System.out.println("Analysis of Merge Sort without Generics...");
 		Timer t = new Timer();
-		mergeSort(A,tmp);
-		System.out.println(t.end());
-//		for(int each=0;each<n;each++){
-//			System.out.print(A[each]+" ");
-//		}
+        mergeSort(array, new int[n]);
+        System.out.println(t.end());
 	}
+
 }
