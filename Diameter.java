@@ -1,85 +1,148 @@
-/**
- * 
- */
 package cs6301.g33;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Scanner;
 
-/**
- * @author chandu
- *
+/*
+ * @author Sai Vivek Kanaparthy
  */
-class Diameter {
 
-	// Conducts a Breadth first search and return the path to the farthest node from the given root
-	public static LinkedList<Graph.Vertex> bfsSearch(Graph g, Graph.Vertex root) {
-		// distance array that maintains distance of each vertex from the root
-		int dist[] = new int[g.size()];
-		
-		//Maintains the predecessor of each vertex
-		int pre[] = new int[g.size()];
-		// initializing to -1
-		for (int i = 0; i< g.size(); i++)
-			dist[i] = -1;
-		
-		Queue<Graph.Vertex> q = new LinkedList<>();
-		q.add(root); // adding a random vertex to the queue 
-		
-		dist[root.name] = 0; // distance of the root from it self is 0
-		while (!q.isEmpty()) {
-			Graph.Vertex t = q.poll();    //vertex at the head of the queue
-			
-			for (Graph.Edge adjEdge: t.adj) {
-				Graph.Vertex v = adjEdge.otherEnd(t); // other end of the edge
-				if (dist[v.name] == -1) {
-					q.add(v);
-					pre[v.name] = t.name;
-					//update the distance of each vertex from the root
-					dist[v.name] = dist[t.name] + 1; // ?????????? adjEdge.weight ??????????????
-				}
-			}
-		}
-		
-		int maxDistance = 0;
-		int farthestNode = -1; // node farthest from root
-		
-		for (int i = 0; i < g.size(); i++) {
-			if (dist[i] > maxDistance) {
-				maxDistance = dist[i];
-				farthestNode = i;
-			}
-		}
-		
-		LinkedList<Graph.Vertex> l = new LinkedList<>();
-		int i = farthestNode;
-		while(i != root.name) {
-			l.add(g.v[i]);
-			i = pre[i];
-		}
-		l.add(g.v[i]);
-		return l;
-	}
+
+public class Diameter {
 	
-	//calculates the diameter of the graph
-	public static LinkedList<Graph.Vertex> diameter(Graph g) {
-		LinkedList<Graph.Vertex> l = bfsSearch(g, g.v[0]);
-		Graph.Vertex u = l.removeFirst(); // node farthest from the randomly selected root
-		return bfsSearch(g, u);
-	}
-	
-	/**
-	 * Driver program to test the functionality
-	 * @param args
+	public static LinkedList<Graph.Vertex> path, tmp;
+    public static int[] previous, distance;
+    CCVertex[] ccVertex;
+    Graph g;
+    
+    
+    // Class to store information about a vertex in this algorithm
+    class CCVertex {
+    	Graph.Vertex element;
+    	boolean seen;
+    	int cno;
+    	CCVertex(Graph.Vertex u) {
+    		element = u;
+    		seen = false;
+    		cno = -1;
+    	}
+    }
+    
+    public Diameter(Graph g) {
+    	this.g = g;
+    	ccVertex = new CCVertex[g.size()];
+    	for(Graph.Vertex u: g) { ccVertex[u.name] = new CCVertex(u); }
+    }
+    
+    
+    /**
+	 * @param u : vertex from where BFS is executed
+	 * Procedure for breadth first search algorithm 
 	 */
-	public static void main(String[] args) {
-		Scanner in = new Scanner(System.in);
-		Graph g = Graph.readGraph(in);
-		LinkedList<Graph.Vertex> l = diameter(g);
-		for (Graph.Vertex v: l)
-			System.out.print(v.toString() + " ---- ");
+    public  void bfsVisit(Graph.Vertex u) {
+    	// path is used to store the order of traversal and can be accesed anywhere as it static variable
+    	path = new LinkedList<>();
+    	//Queue for traversing 
+    	tmp  = new LinkedList<>();
+    	// parent node of the node
+    	previous = new int[g.n];
+    	// distance of node from the start node
+    	distance = new int[g.n];
+    	for(int i=0;i<distance.length;i++){
+    		distance[i]=-1;
+    		previous[i]=u.getName();
+    	}
+    	visit(u);
+    	path.add(u);
+    	tmp.add(u);
+    	distance[u.getName()]=0;
+    	while(tmp.size()!=0){
+    		// remove the visited node 
+    		Graph.Vertex start = tmp.remove();
+    		// traverse across the adjacency list of the node
+    		Iterator<Graph.Edge> it = start.adj.iterator();
+    		while(it.hasNext()){
+    		Graph.Edge e = it.next();
+    		Graph.Vertex v = e.otherEnd(start);
+    		if(distance[v.getName()]==-1){
+    			distance[v.getName()] = distance[start.getName()]+1;
+    			previous[v.getName()] = start.getName();
+    			}
+    		if(!seen(v)) {
+    			visit(v);
+    			path.add(v);
+    			tmp.add(v);
+		    	}	
+    		}
+    	}
+    }
+    
+    
+    /**
+     * 
+     * @param g : Graph on which the diameter is to be determined
+     * @return LinkedList of path of vertices of diameter
+     */
+    public LinkedList<Graph.Vertex> diameter(Graph g){
+    	Diameter bfsOne = new Diameter(g);
+    	LinkedList<Graph.Vertex> diameterPath = new LinkedList<Graph.Vertex>();
+    	// First BFS call with arbitrary start node
+    	bfsOne.bfsVisit(g.getVertex(2));
+    	Graph.Vertex lastBFSOne = path.getLast();
+    	Diameter bfsTwo = new Diameter(g);
+    	// Second BFS call with end node of first BFS
+    	bfsTwo.bfsVisit(lastBFSOne);
+    	Graph.Vertex lastBFSTwo =path.getLast();
+    	while(lastBFSTwo!=lastBFSOne){
+    		diameterPath.add(lastBFSTwo);
+    		int pr = previous[lastBFSTwo.getName()]+1;
+    		lastBFSTwo = g.getVertex(pr);
+    	}
+    	diameterPath.add(lastBFSTwo);
+    	return diameterPath;
+    }
+    
+    public boolean seen(Graph.Vertex u) {
+		CCVertex ccu = getCCVertex(u);
+		return ccu.seen;
+    }
 
+    // Visit a node by marking it as seen
+    void visit(Graph.Vertex u) {
+    	CCVertex ccu = getCCVertex(u);
+    	ccu.seen = true;
+    }
+
+    // From Vertex to CCVertex 
+    CCVertex getCCVertex(Graph.Vertex u) {
+	return ccVertex[u.name];
+    }
+    
+    
+    /**
+     * Driver Class
+     * 
+     */
+    public static void main(String[] args) throws FileNotFoundException {
+	Scanner in;
+        if (args.length > 0) {
+            File inputFile = new File(args[0]);
+            in = new Scanner(inputFile);
+        } else {
+            in = new Scanner(System.in);
+        }
+	Graph g = Graph.readGraph(in);
+	Diameter d = new Diameter(g);
+	LinkedList<Graph.Vertex> dmtrPath=d.diameter(g);
+	System.out.println("Length of diameter: "+dmtrPath.size());
+	System.out.print("Path of diameter: ");
+	for(Graph.Vertex vertex: dmtrPath){
+		System.out.print(vertex+" ");
 	}
+    }
+
 
 }
