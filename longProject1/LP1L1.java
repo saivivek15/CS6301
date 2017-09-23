@@ -5,20 +5,26 @@ package cs6301.g33.longProject1;
 
 public class LP1L1 {
     public static void main(String[] args) {
-	Num x = new Num(99999999);
-	Num y = new Num(99);
-	Num z = Num.add(x, y);
-	Num w = Num.subtract(x, y);
-	Num u = Num.product(x, y);
-	Num v = Num.karatsuba(x, y);
-	Num a = Num.power(x, 2);
-	System.out.println("x: "+x);
-	System.out.println("y: "+y);
-	System.out.println("z: "+z);
-	System.out.println("w: "+w);
-	System.out.println("u: "+u);
-	System.out.println("a: "+a);
-	System.out.println("v: "+v);
-	w.printList();
+	Num x = new Num(24);
+	Num y = new Num(3);
+	System.out.println("## "+x.compareTo(y));
+//	Num z = Num.add(x, y);
+//	System.out.println("x: "+x);
+//	System.out.println("y: "+y);
+//	System.out.println("Add: "+z);
+//	Num w = Num.subtract(x, y);
+//	w.printList();
+//	System.out.println("Sub: "+w);
+//	Num u = Num.product(x, y);
+//	System.out.println("Product: "+u);
+//  Num v = Num.karatsuba(x, y);
+//	System.out.println("v: "+v);
+//	Num a = Num.power(x, 4);
+//	System.out.println("Power: "+a);
+	Num b = Num.divide(x, y);
+	//System.out.println("Divide: "+b);
+	
+	//Num.divid(24, 3);
+	
     }
 }

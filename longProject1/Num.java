@@ -1,5 +1,7 @@
 package cs6301.g33.longProject1;
 
+import java.util.Arrays;
+
 /**
  * @author Sai Vivek Kanaparthy
  * @author Sushma Eati
@@ -7,6 +9,7 @@ package cs6301.g33.longProject1;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 public class Num  implements Comparable<Num> {
 
@@ -23,6 +26,9 @@ public class Num  implements Comparable<Num> {
 
     Num(long x) {
     	long temp =x;
+    	if(x == 0){
+    		this.numObj.add((long) 0);
+    	}
     	while(temp>0){
     		this.numObj.add(temp % base);
     		temp = temp/base;
@@ -62,6 +68,8 @@ public class Num  implements Comparable<Num> {
     	}
     Num sum = new Num(0);
     sum.numObj=numObj;
+    sum.numObj=sum.NoZero();
+    //System.out.println("sum: "+ sum.numObj);
 	return sum;
     }
 
@@ -130,6 +138,9 @@ public class Num  implements Comparable<Num> {
     static Num product(Num a, Num b){
     	long finalSize = a.numObj.size()+b.numObj.size()+1;
     	Num result = new Num(0);
+    	if(a.compareTo(result)==0 || b.compareTo(result)==0){
+    		return result;
+    	}
     	for(int i=0;i<=finalSize;i++){
         	result.numObj.add((long)0);
     	}
@@ -161,53 +172,57 @@ public class Num  implements Comparable<Num> {
     	return result;
     	
     }
-    // Implement Karatsuba algorithm for excellence credit
-    static Num karatsuba(Num a, Num b) {
-    	long baseSize;
-    	int cmp = a.compareTo(b);
-    	if(cmp >1){
-    		baseSize = a.numObj.size();
-    	}else{
-    		baseSize = b.numObj.size();
-    	}
-    	if(baseSize<3){
-    		return product(a, b);
-    	}
-    	baseSize = (baseSize/2);
-    	baseSize += (baseSize % 2);
-    	Num aLow = new Num(0);
-    	Num aHigh = new Num(0);
-    	Num bLow = new Num(0);
-    	Num bHigh = new Num(0);
-    	long count =0;
-    	for(Long ita:a.numObj){
-    		count +=1;
-    		if(count>=baseSize){
-    			aHigh.numObj.add(ita);
-    		}
-    		aLow.numObj.add(ita);
-    	}
-    	count=0;
-    	for(Long itb:b.numObj){
-    		count +=1;
-    		if(count>=baseSize){
-    			bHigh.numObj.add(itb);
-    		}
-    		bLow.numObj.add(itb);
-    	}
-    	Num aLowbLow = karatsuba(aLow,bLow);
-    	Num aHighbHigh = karatsuba(aHigh, bHigh);
-    	Num ab = karatsuba(add(aLow, bHigh), add(aHigh,bLow));
-    	for(long i=0;i<2*baseSize;i++){
-    		aHighbHigh.numObj.add((long) 0);
-    	}
-    	for(long i=0;i<baseSize;i++){
-    		ab.numObj.add((long) 0);
-    	}
-    	Num result = Num.add(aLowbLow, ab);
-    	result = Num.add(aHighbHigh, result);
-	return result;
-    }
+//    // Implement Karatsuba algorithm for excellence credit
+//    static Num karatsuba(Num a, Num b) {
+//    	long k;
+//    	int cmp = a.compareTo(b);
+//    	if(cmp >0){
+//    		k = a.sizeNoZero();
+//    		
+//    	}else{
+//    		k = b.sizeNoZero();
+//    	}
+//    	System.out.println("BS: "+k+ " , "+a+ ":"+ a.sizeNoZero() + " , "+b+" : " + b.sizeNoZero());
+//    	if(k< 2){
+//    		return product(a, b);
+//    	}
+//    	k = (k/2);
+//        //k += (k % 2);
+//    	Num aLow = new Num(0);
+//    	Num aHigh = new Num(0);
+//    	Num bLow = new Num(0);
+//    	Num bHigh = new Num(0);
+//    	long count =0;
+//    	for(Long ita:a.numObj){
+//    		count +=1;
+//    		if(count>=k){
+//    			aLow.numObj.add(ita);
+//    		}
+//    		aHigh.numObj.add(ita);
+//    	}
+//    	count=0;
+//    	for(Long itb:b.numObj){
+//    		count +=1;
+//    		if(count>=k){
+//    			bLow.numObj.add(itb);
+//    		}
+//    		bHigh.numObj.add(itb);
+//    	}
+////    	Num aLowbLow = karatsuba(aLow,bLow);
+////    	Num aHighbHigh = karatsuba(aHigh, bHigh);
+////    	Num ab = karatsuba(add(aLow, aHigh), add(bHigh,bLow));
+////    	Num temp = add(aHighbHigh, aLowbLow);
+////    	ab = subtract(ab,temp);
+////    	for(long i=0;i<2*k;i++){
+////    		aHighbHigh.numObj.addFirst((long) 0);
+////    	}
+////    	for(long i=0;i<k;i++){
+////    		ab.numObj.addFirst((long) 0);
+////    	}
+////    	Num result = Num.add(aLowbLow, ab);
+////    	result = Num.add(aHighbHigh, result);
+//	return null;
+//    }
 
     // Use divide and conquer
     static Num power(Num a, long n) {
@@ -228,8 +243,77 @@ public class Num  implements Comparable<Num> {
     /* End of Level 1 */
 
     /* Start of Level 2 */
+    static double divid(int a,int b){
+    	int max = a;
+    	if(b==0){
+    		return max;
+    	}
+    	double low=0;
+    	double high = max;
+    	while(true){
+    		double mid = low+ (high-low)/2;
+    		System.out.println("L: "+low+" H: "+high);
+    		System.out.println("mid: "+mid);
+    		if(Math.abs(b*mid -a)<= 0.0 && Math.abs((b+1)*mid -a)>0.0){
+    			System.out.println("## "+mid);
+    			return mid;
+    		}
+    		if(b*mid<a){
+    			low=mid;
+    		}else{
+    			high=mid;
+    		}
+    	}
+    }
+    static Num middle(Num c){
+    	Iterator<Long> it = c.numObj.descendingIterator();
+    	LinkedList<Long> midList = new LinkedList<>();
+    	long tmp = 0;
+    	while(it.hasNext()){
+    		long nxt = tmp*base+ it.next();
+    		midList.addFirst(nxt / 2);
+    		tmp = nxt%2;
+    	}
+    	Num mid = new Num(0);
+    	mid.numObj=midList;
+  
+    	return mid;
+    }
+    
     static Num divide(Num a, Num b) {
-	return null;
+    	if(b == new Num(0)){
+    		return null;
+    	}
+    	Num low = new Num(0);
+    	Num high = new Num(24);
+    	boolean bool =true;
+    	int count=0;
+    	while(bool){
+    		count +=1;
+    		if(count==10)
+    			bool=false;
+    		Num mid = middle(add(low, high));
+    		System.out.println("H: "+high+" L: "+low);
+    		System.out.println("mid: "+mid);
+    		Num prev=product(mid,b);
+    		prev.numObj=prev.NoZero();
+    		Num nxt = product(mid,add(b,new Num(1)));
+    		nxt.numObj=nxt.NoZero();
+    		System.out.println("prev: "+prev+" "+prev.numObj+" :size: "+ prev.numObj.size());
+    		System.out.println("next: "+nxt+" "+nxt.numObj+" :next: "+ nxt.numObj.size());
+    		System.out.println((prev.compareTo(a)+ " : "+ nxt.compareTo(a)));
+    		if(prev.compareTo(a)<1 && nxt.compareTo(a)>0){
+    			System.out.println("## "+mid);
+    			return mid;
+    		}
+    		if(prev.compareTo(a)<1){
+    			low=mid;
+    		}else{
+    			high=mid;
+    		}
+    		}
+  
+    	return null;
     }
 
     static Num mod(Num a, Num b) {
@@ -255,7 +339,9 @@ public class Num  implements Comparable<Num> {
     // compare "this" to "other": return +1 if this is greater, 0 if equal, -1 otherwise
     public int compareTo(Num other) {
     	long size = this.numObj.size();
+    	
     	long otherSize = other.numObj.size();
+    	//System.out.println("Size:"+ this.numObj+" "+size+" Other Size:"+other.numObj+" "+otherSize);
     	if(size < otherSize){
     		return -1;
     	}
@@ -290,6 +376,19 @@ public class Num  implements Comparable<Num> {
     	}
     	System.out.println(lst);
     }
+    public LinkedList<Long> NoZero(){
+    	Iterator<Long> it = this.numObj.descendingIterator();
+    	int i = this.numObj.size();
+    	while (it.hasNext() && it.next() == 0) {
+    	  i--;
+    	}
+    	LinkedList<Long> res = new LinkedList<>();
+    	for(Long each:this.numObj.subList(0,i)){
+    		res.add(each);
+    	}
+    	return res;
+    
+    }
     
     // Return number to a string in base 10
     public String toString() {
@@ -301,8 +400,11 @@ public class Num  implements Comparable<Num> {
     	while(it.hasNext()){
     		number += it.next();
     	}
-    	number = number.replaceFirst("^0+","");
-	return number;
+    	if(number=="0"){
+    		return number;
+    	}
+    	number = number.replaceFirst("^0+", "");
+    	return number;
     }
 
     public long base() { return base; }
