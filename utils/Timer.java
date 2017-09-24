@@ -1,15 +1,12 @@
-
-/** Timer class for roughly calculating running time of programs
- *  @author rbk
- *  Ver 1.0: 2017/08/08
- *  Usage:  Timer timer = new Timer();
- *          timer.start();
- *          timer.end();
- *          System.out.println(timer);  // output statistics
- *  Corrected memory calculations to 1048576 instead of 1000000
+/**
+ * 
  */
-
 package cs6301.g33.utils;
+
+/**
+ * @author Sushma
+ *
+ */
 public class Timer {
     long startTime, endTime, elapsedTime, memAvailable, memUsed;
 
@@ -32,6 +29,4 @@ public class Timer {
     public String toString() {
         return "Time: " + elapsedTime + " msec.\n" + "Memory: " + (memUsed/1048576) + " MB / " + (memAvailable/1048576) + " MB.";
     }
-
 }
-
