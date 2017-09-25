@@ -4,10 +4,18 @@
 package cs6301.g33.utils;
 
 /**
- * @author Sushma
+ * @author Sushma, Sai Vivek Kanaparthy
  *
  */
 public class BinarySearch {	
+	/**
+	 * 
+	 * @param input: Input Array
+	 * @param start_index: Start index
+	 * @param end_index: End Index
+	 * @param element: Element to be searched
+	 * @return
+	 */
 	//input should be sorted for binary search to work
 	public static<T extends Comparable<? super T>> boolean binarySearch(T[] input,  int start_index, int end_index, T element)
 	{

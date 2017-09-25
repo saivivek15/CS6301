@@ -23,7 +23,7 @@ public class LegacyMergeSort {
 			 int middle_index = (start_index+end_index)>>>1;
 			 mergeSort(input,start_index, middle_index);
 			 mergeSort(input,middle_index+1, end_index);
-			 mergeArrays(input,start_index, end_index, middle_index);
+			 merge(input,start_index, end_index, middle_index);
 		 
 	}
 	
@@ -34,13 +34,13 @@ public class LegacyMergeSort {
 	 * @param end_index: 
 	 * @param middle_index
 	 */
-	public static void mergeArrays(int[] input, int start_index,int end_index, int middle_index)
+	public static void merge(int[] input, int start_index,int end_index, int middle_index)
 	{
 		int size_of_array = (end_index - start_index)+1;
 		int temp_start = start_index;
 		int temp_index = 0;
 		int temp_middle_index = middle_index+1;
-		int[] temp_array = new int[input.length];
+		int[] temp_array = new int[end_index-start_index+1];
 
 		//Check 1st element of left array and 1st element of right array, assign smallest elem to the temp array and increase index accordingly
 		while(temp_start <= middle_index && temp_middle_index <= end_index)

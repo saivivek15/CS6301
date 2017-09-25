@@ -52,8 +52,15 @@ public class FibonacciHelper {
 			multiply(inputMatrix,tempMatrix);
 		
 	}
+	
+	/**
+	 * 
+	 * @param inputMatrix: Input matrix used in multiplication
+	 * @param tempMatrix: Input matrix
+	 */
 	public static void multiply(BigInteger[][] inputMatrix,BigInteger[][] tempMatrix)
 	{
+		//Multiply both matrices
 		BigInteger a = new BigInteger((inputMatrix[0][0].multiply(tempMatrix[0][0])).add(inputMatrix[0][1].multiply(tempMatrix[1][0]))+"");
 		BigInteger b = new BigInteger((inputMatrix[0][0].multiply(tempMatrix[0][1])).add(inputMatrix[0][1].multiply(tempMatrix[1][1]))+"");
 		BigInteger c = new BigInteger((inputMatrix[1][0].multiply(tempMatrix[0][0])).add(inputMatrix[1][1].multiply(tempMatrix[1][0]))+"");
@@ -65,10 +72,12 @@ public class FibonacciHelper {
 		inputMatrix[1][1] = d;
 		
 	}
-
-	public static BigInteger logFibonacci(int number) {
-		// TODO Auto-generated method stub
-		
+/**
+ * 
+ * @param number: Number for which fibonacci has to be calculated
+ * @return
+ */
+	public static BigInteger logFibonacci(int number) {	
 		if(number==0 || number ==1)
 			return BigInteger.valueOf(number);
 		else
