@@ -1,0 +1,28 @@
+SHORT PROJECT 4
+
+AUTHORS: Sushma, Sai Vivek
+
+Question:2
+
+Fibonocci
+
+Driver Class: FindFibonacci.java
+Helper Class: FibonacciHelper.java
+
+
+Question 3:
+
+Merge Sort Comparision:
+
+Driver Class: CompareMergeSortVersions.java
+
+Helper Class: LegacyMergeSort.java,MergeSortCombinedWithInsertionSort.java,MergeSortRemoveUnneccesaryCopies.java,MergeSortUsingIntArray.java,InsertionSort.java
+
+
+Question 4:
+
+Binary Search:
+
+Driver Class: BinarySearchGenerics.java
+
+Helper Class: BinarySearch.java
