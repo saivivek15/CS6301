@@ -1,0 +1,10 @@
+Submitted PART A, B & E
+
+PART A: Please execute LP4a.java ( Main Class)
+
+PART B: Please execute LP4b.java ( Main Class)
+
+PART E: Please execute LPe.java (Main Class)
+		In result, in case the shortest path cannot be found from the number of edges that is given in the form of k.
+		We have to print Infinity.. In the program Infinity refers to Integer.MAX_VALUE.
+		So, when ever we cannot find the shortest path, we return Integer.MAX_VALUE(Please refer that as infinity).
