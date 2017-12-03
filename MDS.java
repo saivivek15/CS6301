@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,7 +26,7 @@ public class MDS {
 
 	public static class Item {
 		Pair pair;
-		Long[] description;
+		HashSet<Long> description;
 		TreeMap<Long, Integer> suppliersItems = new TreeMap<>();
 
 		public Item(Pair p) {
@@ -36,9 +37,9 @@ public class MDS {
 		 public static Comparator<Item> ElementBasedComparator= new Comparator<Item>() {
 
 		    	public int compare(Item item1, Item item2) {
-					if (item1.description.length > item2.description.length)
+					if (item1.description.size() > item2.description.size())
 						return -1;
-					else if (item1.description.length < item2.description.length)
+					else if (item1.description.size() < item2.description.size())
 						return 1;
 					else
 						return 0;
@@ -83,17 +84,18 @@ public class MDS {
 	public boolean add(Long id, Long[] description) {
 		if (items.containsKey(id)) {
 			Item itm = items.get(id);
-			List<Long> tmp = new ArrayList<Long>(itm.description.length
-					+ description.length);
-			Collections.addAll(tmp, itm.description);
-			Collections.addAll(tmp, description);
-			itm.description = (Long[]) tmp.toArray();
+			for(Long l: description){
+				itm.description.add(l);
+			}
 			return false;
 		} else {
 			Pair p = new Pair(id, 0);
 			Item itm = new Item(p);
 			// itm.pair.id=id;
-			itm.description = description;
+			itm.description = new HashSet<>();
+			for(Long l: description){
+				itm.description.add(l);
+			}
 			items.put(id, itm);
 			return true;
 		}
@@ -145,8 +147,16 @@ public class MDS {
 	 */
 	public Long[] description(Long id) {
 		if (items.containsKey(id)) {
+			int count=0;
 			Item tmp = items.get(id);
-			return tmp.description;
+			int s = tmp.description.size();
+			Long[] result = new Long[s];
+			for(Long l: tmp.description){
+				//System.out.print(l+" ");
+				result[count++]=l;
+			}
+			//System.out.println();
+			return result;
 		}
 		return null;
 	}
@@ -191,11 +201,13 @@ public class MDS {
 		List<Item> finalItems = new ArrayList<Item>();
 
 		for (Entry<Long, Item> item : items.entrySet()) {
-			if (Arrays.asList(item.getValue().description).contains(n)) {
+			if (item.getValue().description.contains(n)) {
+				//System.out.println("##"+ item.getKey());
 				if (item.getValue().suppliersItems.size() > 0) {
 					for (Entry<Long, Integer> entry : item.getValue().suppliersItems
 							.entrySet()) {
 						Float rep = suppliers.get(entry.getKey());
+						
 						if (rep != null
 								&& rep >= minReputation
 								&& (entry.getValue() > minPrice && entry
@@ -226,7 +238,7 @@ public class MDS {
 	 */
 	public Long[] findSupplier(Long id) {
 		Item item = items.get(id);
-		if (item == null)
+		if (item == null || item.suppliersItems == null)
 			return null;
 		else {
 			return (Long[]) item.suppliersItems.keySet().toArray();
@@ -346,7 +358,7 @@ public class MDS {
 		Item item = items.get(id);
 		if(item != null)
 		{
-			List<Long> des = new LinkedList<Long>(Arrays.asList(item.description));
+			List<Long> des = new LinkedList<Long>(item.description);
 			for(Long l: arr)
 			{
 				Iterator<Long> it = des.iterator();
@@ -359,9 +371,9 @@ public class MDS {
 					}
 				}
 			}
-			Long[] desTemp = new Long[des.size()];
+			HashSet<Long> desTemp = new HashSet<>(des.size());
 			for(int i=0;i<des.size();i++)
-				desTemp[i] = des.get(i);
+				desTemp.add(des.get(i));
 			item.description = desTemp;
 		}
 		return res;
@@ -377,7 +389,7 @@ public class MDS {
 		int result = 0;
 		for(Entry<Long,Item> item: items.entrySet())
 		{
-			List<Long> des = new LinkedList<Long>(Arrays.asList(item.getValue().description));
+			List<Long> des = new LinkedList<Long>(item.getValue().description);
 			for(Long l: arr)
 			{
 				Iterator<Long> it = des.iterator();
@@ -393,9 +405,9 @@ public class MDS {
 			if(res>0)
 			{
 				result++;
-				Long[] desTemp = new Long[des.size()];
+				HashSet<Long> desTemp = new HashSet<>(des.size());
 				for(int i=0;i<des.size();i++)
-					desTemp[i] = des.get(i);
+					desTemp.add(des.get(i));
 				item.getValue().description = desTemp;
 			}
 		}
