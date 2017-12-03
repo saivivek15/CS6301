@@ -279,12 +279,17 @@ public class MDS {
 	 */
 	public int invoice(Long[] arr, float minReputation) {
 		int totalPrice = 0;
-//		for (Long i : arr) {
-//			Long idSupplier = findSupplier(i, minReputation)[0];
-//			Item itm = items.get(i);
-//			int supplierPrice = itm.suppliersItems.get(idSupplier);
-//			totalPrice += supplierPrice;
-//		}
+		for (Long i : arr) {
+			Long[] ids =findSupplier(i, minReputation);
+			if(ids.length!=0){
+				Long idSupplier = findSupplier(i, minReputation)[0];
+				Item itm = items.get(i);
+				int supplierPrice = itm.suppliersItems.get(idSupplier);
+				totalPrice += supplierPrice;
+			}else{
+				System.out.println("Skipping id "+ i + " not available from seller with at least "+minReputation+" reputation");
+			}
+		}
 		return totalPrice;
 	}
 
