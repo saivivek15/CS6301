@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 
 public class MDS {
@@ -240,7 +241,13 @@ public class MDS {
 		if (item == null || item.suppliersItems == null)
 			return null;
 		else {
-			return (Long[]) item.suppliersItems.keySet().toArray();
+			 int count=0;
+			 Long[] result = new Long[item.suppliersItems.keySet().size()]; 
+			 Set<Long> st=item.suppliersItems.keySet();
+			 for(Long l : st){
+				 result[count++]=l;
+			 }
+			 return result;
 		}
 
 	}
