@@ -8,10 +8,12 @@ package cs6301.g33;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
@@ -20,6 +22,7 @@ public class MDS {
 
 	static TreeMap<Long, Item> items = new TreeMap<>();
 	static TreeMap<Long, Float> suppliers = new TreeMap<>();
+	static Map<Long,List<Long>> numberOfItems = new HashMap<>();
 
 	public MDS() {
 	}
@@ -28,7 +31,7 @@ public class MDS {
 		Pair pair;
 		HashSet<Long> description;
 		TreeMap<Long, Integer> suppliersItems = new TreeMap<>();
-
+		
 		public Item(Pair p) {
 			this.pair = p;
 			this.description = null;
@@ -133,6 +136,13 @@ public class MDS {
 				if (tmp.suppliersItems.containsKey(supplier)) {
 					tmp.suppliersItems.put(supplier, p.price);
 				} else {
+					List<Long> temp = new ArrayList<Long>();
+					if(numberOfItems.get(supplier) != null)
+					{
+					 temp = numberOfItems.get(supplier);
+					}
+					temp.add(p.id);
+					numberOfItems.put(supplier,temp);
 					tmp.suppliersItems.put(supplier, p.price);
 					count++;
 				}
@@ -286,7 +296,58 @@ public class MDS {
 	 * Make sure that each supplier appears only once in the returned array.
 	 */
 	public Long[] identical() {
-		return null;
+		List<Long> ids = new ArrayList<Long>();
+		Map<Float,List<Long>> supIds = new HashMap<Float,List<Long>>();
+		Set<Long> finalIds = new HashSet<Long>();
+		
+		for(Entry<Long,List<Long>> entry : numberOfItems.entrySet())
+		{
+			if(entry.getValue().size()  >= 5)
+				ids.add(entry.getKey());
+		}
+		for(Long l : ids)
+		{
+			List<Long> value = new ArrayList<Long>();
+			if(supIds.get(suppliers.get(l)) != null)
+			{
+				value=supIds.get(suppliers.get(l));
+			}
+			value.add(l);
+			supIds.put(suppliers.get(l), value);
+		}
+		for(Entry<Float,List<Long>> id: supIds.entrySet())
+		{
+			int cost=Integer.MIN_VALUE;
+			boolean check = false;
+			for(Long l : id.getValue())
+			{
+				for(Long L : numberOfItems.get(l))
+				{
+					if(items.get(L) != null)
+					if(cost == Integer.MIN_VALUE)
+					{
+						cost = items.get(L).pair.price;
+					}
+						
+					else
+					{
+						if(items.get(L) != null)
+						if(cost !=items.get(L).pair.price )
+						{
+							check = true;
+							break;
+						}
+					}
+				}
+				if(check == false)
+					finalIds.add(l);
+			}
+		}
+		Long[] idsFinal = new Long[finalIds.size()];
+		int i =0;
+		for(Long l : finalIds)
+			idsFinal[i++] = l;
+		return idsFinal;
 	}
 
 	/*
